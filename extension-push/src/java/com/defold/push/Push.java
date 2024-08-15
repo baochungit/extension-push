@@ -139,8 +139,11 @@ public class Push {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, projectTitle, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, projectTitle, NotificationManager.IMPORTANCE_HIGH);
+            channel.setShowBadge(true);
             channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{0, 250, 250, 250});
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             channel.setDescription("");
 
             NotificationManager notificationManager = (NotificationManager)activity.getSystemService(NotificationManager.class);
@@ -703,9 +706,12 @@ public class Push {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setVibrate(new long[]{0, 250, 250, 250})
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true)
                 .setContentText(text);
 
         // Find icons if they were supplied, fallback to app icon
@@ -738,8 +744,6 @@ public class Push {
 
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = builder.build();
-        notification.defaults = Notification.DEFAULT_ALL;
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
         nm.notify(id, notification);
     }
 
