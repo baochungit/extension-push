@@ -355,6 +355,12 @@ public class Push {
         String packageName = activity.getPackageName();
         int iconSmall = activity.getResources().getIdentifier("push_icon_small", "drawable", packageName);
         int iconLarge = activity.getResources().getIdentifier("push_icon_large", "drawable", packageName);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int smallIconVectorId = activity.getResources().getIdentifier("ic_notification_icon", "drawable", packageName);
+            if (smallIconVectorId != 0) {
+                iconSmall = smallIconVectorId;
+            }
+        }
         putValues(extras, uid, title, message, payload, timestampMillis, priority, iconSmall, iconLarge);
 
         storeLocalPushNotification(appContext, uid, extras);
@@ -708,14 +714,20 @@ public class Push {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setVibrate(new long[]{0, 250, 250, 250})
-                .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setAutoCancel(true)
+                .setContentTitle(title)
                 .setContentText(text);
 
         // Find icons if they were supplied, fallback to app icon
         int smallIconId = context.getResources().getIdentifier("push_icon_small", "drawable", context.getPackageName());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int smallIconVectorId = context.getResources().getIdentifier("ic_notification_icon", "drawable", context.getPackageName());
+            if (smallIconVectorId != 0) {
+                smallIconId = smallIconVectorId;
+            }
+        }
         int largeIconId = context.getResources().getIdentifier("push_icon_large", "drawable", context.getPackageName());
         if (smallIconId == 0) {
             smallIconId = info.icon;
