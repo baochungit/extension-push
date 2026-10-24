@@ -2,6 +2,7 @@
 title = extension-push
 bundle_resources = /bundle
 dependencies#0 = https://github.com/andsve/dirtylarry/archive/master.zip
+dependencies#1 = https://github.com/defold/extension-permissions/archive/refs/tags/1.0.0.zip
 
 [bootstrap]
 main_collection = /main/push.collectionc
@@ -16,13 +17,12 @@ height = 1136
 [android]
 input_method = HiddenInputField
 package = com.defold.push
+minimum_sdk_version = 23
 
 [library]
+defold_min_version = 1.14.0
 include_dirs = extension-push
 
 [ios]
 bundle_identifier = com.defold.push
-
-[native_extension]
-app_manifest = /generated.appmanifest
 

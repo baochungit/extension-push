@@ -47,8 +47,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class Push {
@@ -434,25 +433,22 @@ public class Push {
             return;
         }
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        FirebaseMessaging.getInstance().register()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(Task<InstanceIdResult> task) {
+                    public void onComplete(Task<Void> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            Log.w(TAG, "FCM registration failed", task.getException());
                             sendRegistrationResult(null, task.getException().getLocalizedMessage());
-                            return;
                         }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        sendToken(token);
+                        // Successful registration is delivered asynchronously to
+                        // FirebaseMessagingService.onRegistered() with the FID.
                     }
                 });
     }
 
-    public void sendToken(String token) {
-        sendRegistrationResult(token, null);
+    public void sendRegistrationId(String installationId) {
+        sendRegistrationResult(installationId, null);
     }
 
     private boolean checkPlayServices(Activity activity) {
